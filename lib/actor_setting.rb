@@ -37,7 +37,7 @@ module Journalization
               def set_journalization_actor_object
                 Journalization::ActorClassName.constantize.journalization_actor_object = self.current_user
               end
-
+              
               def reset_journalization_actor_object
                 Journalization::ActorClassName.constantize.reset_journalization_actor_object
               end
