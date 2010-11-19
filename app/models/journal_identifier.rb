@@ -21,7 +21,7 @@ class JournalIdentifier< ActiveRecord::Base
   
   validates_presence_of :journal
   
-  def self.find_for(journalized_type, journalized_id, datetime = Time.zone.now)
+  def self.find_for(journalized_type, journalized_id, datetime = Time.now)
     journalized = journalized_type.constantize.find(journalized_id) rescue nil
     
     if journalized && journalized.respond_to?(:journal_identifiers)
@@ -31,7 +31,7 @@ class JournalIdentifier< ActiveRecord::Base
     end
   end
   
-  def self.find_last_for(journalized_type, journalized_id, datetime = Time.zone.now)
+  def self.find_last_for(journalized_type, journalized_id, datetime = Time.now)
     self.find_for(journalized_type, journalized_id, datetime).last
   end
 end

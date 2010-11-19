@@ -46,7 +46,6 @@ require 'shoulda'
 
 gem 'paperclip'
 require 'paperclip'
-include Paperclip
 
 # define logger for journalization
 log_file = File.join(File.dirname(__FILE__), "test.log")
