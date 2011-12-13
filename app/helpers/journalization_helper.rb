@@ -34,10 +34,29 @@ module JournalizationHelper
     old_value, new_value = journal_line.old_value, journal_line.new_value
     
     if belongs_to_property
+      old_value = nil if old_value == 0
+      new_value = nil if new_value == 0
+      
+      return if old_value.nil? and new_value.nil?
+      
+      if belongs_to_property[:polymorphic]
+        belongs_to_property[:class_name] = journal_line.journal.journalized.send(belongs_to_property[:foreign_type])
+      end
       class_name = belongs_to_property[:class_name]
       created_at = journal_line.journal.created_at
       
-      old_value = get_identifier("belongs_to", [class_name, old_value, created_at]) unless old_value.blank?
+      if belongs_to_property[:polymorphic]
+        old_class_name = class_name
+        if type_journal_line = journal_line.journal.journal_lines.find_by_property(belongs_to_property[:foreign_type]) # if polymorphic type has changed
+          old_type = type_journal_line.old_value
+          old_class_name = old_type unless old_type.blank?
+        end
+        
+        old_value = get_identifier("belongs_to", [old_class_name, old_value, created_at]) unless old_value.blank?
+      else
+        old_value = get_identifier("belongs_to", [class_name, old_value, created_at]) unless old_value.blank?
+      end
+      
       new_value = get_identifier("belongs_to", [class_name, new_value, created_at]) unless new_value.blank?
       
       property = klass.human_attribute_name(belongs_to_property[:name])

@@ -61,7 +61,11 @@ module Journalization
                 foreign_key ||= a.name.to_s + "_id"
                 
                 if attribute.to_s == foreign_key
-                  self.journalized_belongs_to_attributes[attribute] = { :name => a.name.to_s, :class_name => a.class_name }
+                  if a.options[:polymorphic]
+                    self.journalized_belongs_to_attributes[attribute] = { :name => a.name.to_s }.merge(a.options) # options = { :polymorphic => true, :foreign_type => "polymorphic_type" }
+                  else
+                    self.journalized_belongs_to_attributes[attribute] = { :name => a.name.to_s, :class_name => a.class_name }
+                  end
                   break
                 end
               end
